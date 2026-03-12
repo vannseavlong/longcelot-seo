@@ -31,7 +31,6 @@
     "postinstall": "node -e \"const fs=require('fs');if(fs.existsSync('./dist/scripts/postinstall.cjs')){require('./dist/scripts/postinstall.cjs')}\""
   },
   "dependencies": {
-    "@longcelot-seo/core": "workspace:*",
     "chalk": "^5.3.0",
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
