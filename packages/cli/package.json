@@ -1,8 +1,15 @@
 {
   "name": "longcelot-seo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The SEO engineer's best friend — CLI toolkit for auditing, fixing, and monitoring SEO",
-  "keywords": ["seo", "cli", "audit", "nextjs", "vue", "react"],
+  "keywords": [
+    "seo",
+    "cli",
+    "audit",
+    "nextjs",
+    "vue",
+    "react"
+  ],
   "homepage": "https://github.com/vannseavlong/longcelot-seo",
   "repository": {
     "type": "git",
@@ -40,7 +47,9 @@
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=18.0.0"
   }
