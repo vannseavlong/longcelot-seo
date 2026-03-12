@@ -10,10 +10,12 @@
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release:patch": "cd packages/cli && npm version patch",
+    "release:minor": "cd packages/cli && npm version minor",
+    "release:major": "cd packages/cli && npm version major"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.57.0",

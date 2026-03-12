@@ -87,7 +87,7 @@ Every technology choice is optimised for solo-developer productivity, long-term 
 | Output | Custom template engine | Formats violations as structured AI agent prompts |
 | Build | tsup | Bundles TS to CJS + ESM. Slim `dist/` for npm publish |
 | Testing | Vitest | Fast unit/integration tests. Every rule must have tests. |
-| Versioning | changesets | Automated CHANGELOG and npm publish on version bump |
+| Versioning | `npm version` + git tags | `pnpm release:patch/minor/major` → tag → CI publishes to npm |
 | Linting | ESLint + Prettier | `@typescript-eslint` with `no-explicit-any` set to `error` |
 
 ### 2.2 Web Platform & Landing Page
@@ -486,7 +486,7 @@ Repository: **https://github.com/vannseavlong/longcelot-seo**
 | 5 | Add `CONTRIBUTING.md` | High | 1 hr | Fork flow, branch naming, commit style, test requirements |
 | 6 | Add `CODE_OF_CONDUCT.md` | High | 15 min | Contributor Covenant v2.1 |
 | 7 | GitHub Actions: CI workflow | Critical | 2 hrs | Lint + type-check + test on every PR. Uses `NPM_TOKEN` secret. |
-| 8 | GitHub Actions: publish workflow | High | 2 hrs | Auto-publish to npm on changesets release PR merge |
+| 8 | GitHub Actions: publish workflow | High | 2 hrs | Auto-publish to npm on `v*` git tag push |
 | 9 | Add `NPM_TOKEN` as GitHub repository secret | Critical | 10 min | Settings → Secrets → Actions → `NPM_TOKEN` |
 | 10 | Set branch protection on `main` | High | 10 min | Require passing CI checks before merge |
 | 11 | Add GitHub issue templates | Medium | 30 min | Bug report + Feature request |
@@ -545,7 +545,7 @@ When the package is installed globally (via `postinstall` hook) or when `lseo` i
 | 7 | Write cosmiconfig loader for `lseo.config.js` | High | 1 hr | Loads config, merges with CLI flags, validates with Zod |
 | 8 | Add ESLint + Prettier + Husky pre-commit | Critical | 1 hr | `@typescript-eslint/no-explicit-any: error` |
 | 9 | Write smoke tests (Vitest) | High | 1 hr | Test `--version`, banner output, config loading |
-| 10 | Configure changesets for versioning | High | 1 hr | `pnpm changeset`, auto-publish workflow |
+| 10 | Configure release scripts + git tag publish | High | 1 hr | `pnpm release:patch/minor/major` → `git push --follow-tags` |
 | 11 | Publish `v0.0.1-alpha` to npm via CI | Critical | 1 hr | CI uses `NPM_TOKEN` secret |
 
 ### `lseo.config.js` Schema
@@ -792,7 +792,7 @@ lseo open [options]
 
 | # | Task | Priority | Effort | Notes |
 |---|---|---|---|---|
-| 1 | Publish `v1.0.0` to npm via CI | Critical | 2 hrs | Tag → changeset → `NPM_TOKEN` publish |
+| 1 | Publish `v1.0.0` to npm via CI | Critical | 2 hrs | `pnpm release:major` → `git push --follow-tags` → `NPM_TOKEN` publish |
 | 2 | Deploy web to Firebase Hosting | Critical | 2 hrs | `firebase deploy` — set prod env vars |
 | 3 | Deploy backend to Render | Critical | 2 hrs | Push to `main` triggers auto-deploy |
 | 4 | Switch `APP_ENV=production` | Critical | 30 min | Activates Supabase adapter |

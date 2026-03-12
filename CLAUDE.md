@@ -24,10 +24,11 @@
 | `CONTRIBUTING.md` | Fork flow, branch naming, commit style, test requirements |
 | `CODE_OF_CONDUCT.md` | Contributor Covenant v2.1 |
 | `vitest.config.ts` (root) | Root-level Vitest config (coverage thresholds) |
-| `.changeset/config.json` | Changesets config for versioning and npm publish |
+| `.changeset/config.json` | Changesets config (kept for reference, not used for publishing) |
 | `.husky/pre-commit` | Pre-commit hook: `pnpm lint && pnpm typecheck` |
+| `CHANGELOG.md` | Changelog following keepachangelog.com format |
 | `.github/workflows/ci.yml` | CI: lint + typecheck + test on every PR/push to main |
-| `.github/workflows/publish.yml` | Publish to npm via changesets on main merge |
+| `.github/workflows/publish.yml` | Publish to npm triggered by `v*` git tags |
 | `.github/ISSUE_TEMPLATE/bug_report.md` | GitHub bug report template |
 | `.github/ISSUE_TEMPLATE/feature_request.md` | GitHub feature request template |
 | `.github/PULL_REQUEST_TEMPLATE.md` | PR checklist template |
@@ -82,6 +83,28 @@ node packages/cli/dist/bin/lseo.js --version   # → 0.0.1
 node packages/cli/dist/bin/lseo.js --help       # → lists all commands
 node packages/cli/dist/bin/lseo.js init         # → scaffolds lseo.config.js
 ```
+
+### Release Flow (every version)
+
+```sh
+# 1. Code changes, commit normally
+git add . && git commit -m "feat: your changes"
+
+# 2. Update CHANGELOG.md, commit
+git add CHANGELOG.md && git commit -m "chore: update changelog for vX.Y.Z"
+
+# 3. Bump version — auto-edits packages/cli/package.json + creates git tag
+pnpm release:patch   # bug fix:       0.1.0 → 0.1.1
+pnpm release:minor   # new feature:   0.1.0 → 0.2.0
+pnpm release:major   # breaking:      0.1.0 → 1.0.0
+
+# 4. Push code + tag → triggers CI → auto-publishes to npm
+git push origin main --follow-tags
+```
+
+> `pnpm release:*` runs `cd packages/cli && npm version patch/minor/major`
+> which bumps `packages/cli/package.json` and creates a `v*` git tag.
+> The publish workflow in `.github/workflows/publish.yml` triggers on that tag.
 
 ---
 
