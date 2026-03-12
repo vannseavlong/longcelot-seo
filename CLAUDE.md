@@ -7,7 +7,8 @@
 
 ## Phase 1 — CLI SDK Core + Install Banner ✅ COMPLETE
 
-**Completed:** 2026-03-12
+**Completed:** 2026-03-13
+**Published:** `longcelot-seo@0.0.2` on npm (current stable)
 
 ### What Was Built
 
@@ -79,28 +80,39 @@ Total:         25 tests passing
 ### CLI Verification
 
 ```sh
-node packages/cli/dist/bin/lseo.js --version   # → 0.0.1
+node packages/cli/dist/bin/lseo.js --version   # → 0.0.2
 node packages/cli/dist/bin/lseo.js --help       # → lists all commands
 node packages/cli/dist/bin/lseo.js init         # → scaffolds lseo.config.js
 ```
+
+### Post-Phase-1 Fixes Applied
+
+| Fix | Reason |
+|---|---|
+| Removed `@longcelot-seo/core` from published `dependencies` | It's a private workspace package — bundled by tsup, not on npm. Would cause `ERR_PNPM_FETCH_404` on install. |
+| Added `permissions: contents: write` to `publish.yml` | GitHub Actions needs explicit write permission to create GitHub Releases via `softprops/action-gh-release`. |
 
 ### Release Flow (every version)
 
 ```sh
 # 1. Code changes, commit normally
-git add . && git commit -m "feat: your changes"
+git add <files> && git commit -m "feat: your changes"
 
-# 2. Update CHANGELOG.md, commit
-git add CHANGELOG.md && git commit -m "chore: update changelog for vX.Y.Z"
+# 2. Bump version — edits packages/cli/package.json + creates git tag pointing at HEAD
+pnpm release:patch   # bug fix:       0.0.2 → 0.0.3
+pnpm release:minor   # new feature:   0.0.2 → 0.1.0
+pnpm release:major   # breaking:      0.0.2 → 1.0.0
 
-# 3. Bump version — auto-edits packages/cli/package.json + creates git tag
-pnpm release:patch   # bug fix:       0.1.0 → 0.1.1
-pnpm release:minor   # new feature:   0.1.0 → 0.2.0
-pnpm release:major   # breaking:      0.1.0 → 1.0.0
-
-# 4. Push code + tag → triggers CI → auto-publishes to npm
+# 3. Push commits + tag → triggers publish.yml → auto-publishes to npm + creates GitHub Release
 git push origin main --follow-tags
 ```
+
+> ⚠️ **Critical:** The tag must point at a commit that already contains the latest `publish.yml`.
+> If you need to re-push a tag, delete it locally and remotely first, then re-tag at HEAD:
+> ```sh
+> git push origin --delete vX.Y.Z && git tag -d vX.Y.Z
+> git tag vX.Y.Z && git push origin vX.Y.Z
+> ```
 
 > `pnpm release:*` runs `cd packages/cli && npm version patch/minor/major`
 > which bumps `packages/cli/package.json` and creates a `v*` git tag.
@@ -110,7 +122,7 @@ git push origin main --follow-tags
 
 ## What To Do Next — Phase 2: Codebase Scanner
 
-**Target:** `lseo scan` — 10 typed SEO rules + AI agent prompt output
+**Target:** `lseo scan` — 13 typed SEO rules + AI agent prompt output
 
 ### Files to Create
 
@@ -163,7 +175,8 @@ Update `packages/cli/src/commands/scan.ts` to:
 
 ### CI Gate
 
-All 10 rule unit tests must pass before Phase 2 is considered done.
+All 9 rule unit tests must pass before Phase 2 is considered done.
+*(SPEC targets 13 typed rules total — H1 rule covers both missing + duplicate; prompt formatter + integration test also required)*
 
 ---
 
