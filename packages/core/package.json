@@ -1,6 +1,7 @@
 {
   "name": "@longcelot-seo/core",
   "version": "0.0.1",
+  "private": true,
   "description": "Shared types, rules, and DB adapters for longcelot-seo",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

@@ -1,6 +1,7 @@
 {
   "name": "@longcelot-seo/scanner",
   "version": "0.0.1",
+  "private": true,
   "description": "AST codebase scanner and URL crawler for longcelot-seo",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
