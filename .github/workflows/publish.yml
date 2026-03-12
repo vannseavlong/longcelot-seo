@@ -35,8 +35,27 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Check if version is already published
+        id: check
+        working-directory: packages/cli
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          PKG_NAME=$(node -p "require('./package.json').name")
+          if npm show "${PKG_NAME}@${PKG_VERSION}" version 2>/dev/null | grep -q "${PKG_VERSION}"; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+            echo "Version ${PKG_VERSION} is already on npm — skipping publish."
+          else
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish longcelot-seo
+        if: steps.check.outputs.already_published == 'false'
         run: pnpm publish --no-git-checks --access public
         working-directory: packages/cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
