@@ -23,6 +23,7 @@ export default defineConfig([
       'cli-table3',
       '@longcelot-seo/core',
       '@longcelot-seo/scanner',
+      '@vue/compiler-sfc',
     ],
   },
   {
