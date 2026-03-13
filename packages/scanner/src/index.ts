@@ -1,15 +1,24 @@
 /**
- * @longcelot-seo/scanner — Phase 2 & 3 implementation.
- *
- * This package will contain:
- *   - src/ast/walker.ts       — Typed file walker
- *   - src/ast/jsx-parser.ts   — Babel AST → RuleViolation[]
- *   - src/ast/vue-parser.ts   — @vue/compiler-sfc → RuleViolation[]
- *   - src/url/fetcher.ts      — Typed HTTP fetch
- *   - src/url/crawler.ts      — BFS multi-page crawler
- *   - src/url/cheerio-adapter.ts — Cheerio DOM → rule engine
- *
- * Currently a stub — implementation starts in Phase 2.
+ * Scanner package - AST and URL scanning for longcelot-seo.
+ * @package
  */
 
-export type { ScanResult, RuleViolation, ScanOptions, UrlScanOptions } from '@longcelot-seo/core';
+// AST scanning
+export { walkFiles, loadGitignorePatterns, type FileInfo } from './ast/walker.js';
+export { detectFramework } from './ast/framework-detector.js';
+export type { FrameworkType } from '@longcelot-seo/core';
+export {
+  parseJsx,
+  extractViolations,
+  type ParsedFile,
+  type FileMetadata,
+  type ImageInfo,
+  type LinkInfo,
+} from './ast/jsx-parser.js';
+export {
+  parseVue,
+  extractViolationsFromVue,
+  type ParsedVueFile,
+  type VueFileMetadata,
+  type VueImageInfo,
+} from './ast/vue-parser.js';
