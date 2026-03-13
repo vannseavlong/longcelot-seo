@@ -17,7 +17,16 @@ export type RuleId =
   | 'js-only-links'
   | 'missing-canonical'
   | 'missing-og-tags'
-  | 'missing-structured-data';
+  | 'missing-structured-data'
+  /** URL-specific rules */
+  | 'missing-lang-attr'
+  | 'title-too-short'
+  | 'title-too-long'
+  | 'description-too-short'
+  | 'description-too-long'
+  | 'multiple-canonical'
+  | 'missing-viewport'
+  | 'missing-charset';
 
 /** Output format options */
 export type OutputFormat = 'prompt' | 'json' | 'markdown' | 'table';

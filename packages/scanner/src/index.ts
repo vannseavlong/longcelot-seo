@@ -22,3 +22,8 @@ export {
   type VueFileMetadata,
   type VueImageInfo,
 } from './ast/vue-parser.js';
+
+// URL scanning
+export { fetchPage, extractLinks, extractImages, isUrlReachable, type FetchedPage, type FetchOptions } from './url/fetcher.js';
+export { crawlUrl, parseSitemap, discoverSitemap, type CrawlResult, type CrawledPage, type CrawlError, type CrawlOptions } from './url/crawler.js';
+export { extractMetadata, runUrlRules, type PageMetadata } from './url/cheerio-adapter.js';
