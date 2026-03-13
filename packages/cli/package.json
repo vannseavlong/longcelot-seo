@@ -1,6 +1,6 @@
 {
   "name": "longcelot-seo",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "The SEO engineer's best friend — CLI toolkit for auditing, fixing, and monitoring SEO",
   "keywords": [
     "seo",
@@ -18,7 +18,7 @@
   "license": "MIT",
   "author": "Vannseavlong",
   "type": "module",
-  "main": "./dist/bin/lseo.cjs",
+  "main": "./dist/bin/lseo.js",
   "module": "./dist/bin/lseo.js",
   "types": "./dist/bin/lseo.d.ts",
   "bin": {
@@ -31,8 +31,6 @@
     "postinstall": "node -e \"const fs=require('fs');if(fs.existsSync('./dist/scripts/postinstall.cjs')){require('./dist/scripts/postinstall.cjs')}\""
   },
   "dependencies": {
-    "@longcelot-seo/core": "workspace:*",
-    "@longcelot-seo/scanner": "workspace:*",
     "chalk": "^5.3.0",
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
@@ -42,8 +40,16 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "@babel/types": "^7.29.0",
+    "@longcelot-seo/core": "workspace:*",
+    "@longcelot-seo/scanner": "workspace:*",
     "@types/figlet": "^1.5.8",
     "@types/node": "^20.14.0",
+    "@vue/compiler-sfc": "^3.5.30",
+    "cheerio": "^1.0.0",
+    "fast-glob": "^3.3.3",
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"

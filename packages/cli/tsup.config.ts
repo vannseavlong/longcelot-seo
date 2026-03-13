@@ -13,7 +13,17 @@ export default defineConfig([
     banner: {
       js: '#!/usr/bin/env node',
     },
-    external: ['chalk', 'figlet', 'commander', 'cosmiconfig', 'zod', 'ora', 'cli-table3'],
+    external: [
+      'chalk',
+      'figlet',
+      'commander',
+      'cosmiconfig',
+      'zod',
+      'ora',
+      'cli-table3',
+      '@longcelot-seo/core',
+      '@longcelot-seo/scanner',
+    ],
   },
   {
     entry: {
