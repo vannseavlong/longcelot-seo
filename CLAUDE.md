@@ -1,190 +1,189 @@
-# CLAUDE.md — Progress Tracker
+# CLAUDE.md
 
-> This file tracks what has been implemented and what to do next.
-> Updated automatically by Claude Code after each phase.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ---
 
-## Phase 1 — CLI SDK Core + Install Banner ✅ COMPLETE
-
-**Completed:** 2026-03-13
-**Published:** `longcelot-seo@0.0.2` on npm (current stable)
-
-### What Was Built
-
-| File / Folder | Description |
-|---|---|
-| `pnpm-workspace.yaml` | pnpm monorepo workspace linking `packages/*` and `apps/*` |
-| `package.json` (root) | Root workspace scripts: `build`, `test`, `lint`, `typecheck`, `format` |
-| `tsconfig.json` (root) | Strict TypeScript config (`strict`, `noImplicitAny`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`) |
-| `.eslintrc.js` | ESLint with `@typescript-eslint/no-explicit-any: error` enforced |
-| `.prettierrc` | Prettier code style config |
-| `.gitignore` | Standard Node/Next.js gitignore |
-| `LICENSE` | MIT — Copyright Vannseavlong |
-| `README.md` | Badges, install instructions, command reference, config docs |
-| `CONTRIBUTING.md` | Fork flow, branch naming, commit style, test requirements |
-| `CODE_OF_CONDUCT.md` | Contributor Covenant v2.1 |
-| `vitest.config.ts` (root) | Root-level Vitest config (coverage thresholds) |
-| `.changeset/config.json` | Changesets config (kept for reference, not used for publishing) |
-| `.husky/pre-commit` | Pre-commit hook: `pnpm lint && pnpm typecheck` |
-| `CHANGELOG.md` | Changelog following keepachangelog.com format |
-| `.github/workflows/ci.yml` | CI: lint + typecheck + test on every PR/push to main |
-| `.github/workflows/publish.yml` | Publish to npm triggered by `v*` git tags |
-| `.github/ISSUE_TEMPLATE/bug_report.md` | GitHub bug report template |
-| `.github/ISSUE_TEMPLATE/feature_request.md` | GitHub feature request template |
-| `.github/PULL_REQUEST_TEMPLATE.md` | PR checklist template |
-
-#### `packages/core`
-
-| File | Description |
-|---|---|
-| `src/types.ts` | All shared interfaces: `ScanResult`, `RuleViolation`, `LseoConfig`, `IDatabaseAdapter`, `UserContext`, `ScanOptions`, `UrlScanOptions` |
-| `src/constants.ts` | `BRAND_COLOR`, `CLI_NAME`, `PACKAGE_NAME`, `DEFAULT_CONFIG`, `SEVERITY_ORDER` |
-| `src/index.ts` | Barrel export for the package |
-| `src/types.test.ts` | 7 unit tests for constants — all passing |
-| `tsup.config.ts` | Builds CJS + ESM + declarations |
-
-#### `packages/cli`
-
-| File | Description |
-|---|---|
-| `src/bin/lseo.ts` | Commander.js entry point — `lseo --help`, `lseo --version` |
-| `src/banner.ts` | Sky-blue (`#0EA5E9`) ASCII art banner via figlet + chalk |
-| `src/commands/index.ts` | Registers all subcommands |
-| `src/commands/init.ts` | `lseo init` — scaffolds `lseo.config.js` |
-| `src/commands/scan.ts` | `lseo scan` — stub with Phase 2 placeholder message |
-| `src/commands/url.ts` | `lseo url` — stub with Phase 3 placeholder message |
-| `src/commands/open.ts` | `lseo open` — stub with Phase 4 placeholder message |
-| `src/lib/config.ts` | cosmiconfig + Zod config loader (`loadConfig()`) |
-| `src/lib/output.ts` | All 4 formatters: `formatAsPrompt`, `formatAsJson`, `formatAsMarkdown`, `formatAsTable`, `formatOutput` |
-| `src/scripts/postinstall.ts` | Banner printed on global install (builds as CJS) |
-| `src/banner.test.ts` | 3 unit tests for banner |
-| `src/lib/output.test.ts` | 15 unit tests for all output formatters |
-| `tsup.config.ts` | Builds ESM CLI entry + CJS postinstall |
-
-#### `packages/scanner`
-
-| File | Description |
-|---|---|
-| `src/index.ts` | Stub — re-exports types from `@longcelot-seo/core` |
-
-### Test Results (Phase 1)
-
-```
-packages/core   7 tests  — all passing
-packages/cli   18 tests  — all passing
-packages/scanner  0 tests (stub — passWithNoTests: true)
-Total:         25 tests passing
-```
-
-### CLI Verification
+## Commands
 
 ```sh
-node packages/cli/dist/bin/lseo.js --version   # → 0.0.2
-node packages/cli/dist/bin/lseo.js --help       # → lists all commands
-node packages/cli/dist/bin/lseo.js init         # → scaffolds lseo.config.js
+# Install dependencies
+pnpm install
+
+# Build all packages (core → scanner → cli order matters)
+pnpm build
+
+# Run all tests
+pnpm test
+
+# Run tests for a single package
+pnpm --filter longcelot-seo test
+pnpm --filter @longcelot-seo/core test
+pnpm --filter @longcelot-seo/scanner test
+
+# Run a single test file
+pnpm --filter @longcelot-seo/core vitest run src/rules/missing-title.test.ts
+
+# Lint (zero warnings allowed)
+pnpm lint
+
+# Type-check all packages
+pnpm typecheck
+
+# Format
+pnpm format
 ```
 
-### Post-Phase-1 Fixes Applied
+## Features
 
-| Fix | Reason |
-|---|---|
-| Removed `@longcelot-seo/core` from published `dependencies` | It's a private workspace package — bundled by tsup, not on npm. Would cause `ERR_PNPM_FETCH_404` on install. |
-| Added `permissions: contents: write` to `publish.yml` | GitHub Actions needs explicit write permission to create GitHub Releases via `softprops/action-gh-release`. |
+### URL Scanning (Phase 3)
 
-### Release Flow (every version)
+The `lseo url` command scans live websites for SEO issues.
 
 ```sh
-# 1. Code changes, commit normally
-git add <files> && git commit -m "feat: your changes"
+# Scan a single URL
+lseo url https://example.com
 
-# 2. Bump version — edits packages/cli/package.json + creates git tag pointing at HEAD
-pnpm release:patch   # bug fix:       0.0.2 → 0.0.3
-pnpm release:minor   # new feature:   0.0.2 → 0.1.0
-pnpm release:major   # breaking:      0.0.2 → 1.0.0
+# Scan with sitemap discovery
+lseo url https://example.com --sitemap
 
-# 3. Push commits + tag → triggers publish.yml → auto-publishes to npm + creates GitHub Release
+# Crawl multiple pages (depth 2, limit 20)
+lseo url https://example.com --depth 2 --limit 20
+
+# Output as JSON or markdown
+lseo url https://example.com --output json
+lseo url https://example.com --output markdown
+
+# Write results to file
+lseo url https://example.com --file results.json
+```
+
+**URL-specific SEO rules (18 total):**
+- missing-title, missing-meta-description, missing-h1, duplicate-h1
+- missing-alt-text, hash-routing, js-only-links
+- missing-canonical, missing-og-tags, missing-structured-data
+- missing-lang-attr, title-too-short, title-too-long
+- description-too-short, description-too-long, multiple-canonical
+- missing-viewport, missing-charset
+
+---
+
+## Release Flow
+
+```sh
+# 1. Commit changes
+git add <files> && git commit -m "feat: ..."
+
+# 2. Bump version (edits packages/cli/package.json + creates git tag)
+pnpm release:patch   # 0.0.x bug fix
+pnpm release:minor   # 0.x.0 new feature
+pnpm release:major   # x.0.0 breaking
+
+# 3. Push → triggers publish.yml → npm publish + GitHub Release
 git push origin main --follow-tags
 ```
 
-> ⚠️ **Critical:** The tag must point at a commit that already contains the latest `publish.yml`.
-> If you need to re-push a tag, delete it locally and remotely first, then re-tag at HEAD:
-> ```sh
-> git push origin --delete vX.Y.Z && git tag -d vX.Y.Z
-> git tag vX.Y.Z && git push origin vX.Y.Z
-> ```
-
-> `pnpm release:*` runs `cd packages/cli && npm version patch/minor/major`
-> which bumps `packages/cli/package.json` and creates a `v*` git tag.
-> The publish workflow in `.github/workflows/publish.yml` triggers on that tag.
+> The published package is `longcelot-seo` (the CLI). `@longcelot-seo/core` and `@longcelot-seo/scanner` are private workspace packages bundled by tsup — never publish them.
 
 ---
 
-## What To Do Next — Phase 2: Codebase Scanner
+## Architecture
 
-**Target:** `lseo scan` — 13 typed SEO rules + AI agent prompt output
+This is a **pnpm monorepo** with three packages:
 
-### Files to Create
-
-| File | Description |
-|---|---|
-| `packages/scanner/src/ast/walker.ts` | Typed file walker — returns `FileInfo[]` using glob with `.gitignore` awareness |
-| `packages/scanner/src/ast/framework-detector.ts` | Reads `package.json`, returns `FrameworkType` enum |
-| `packages/scanner/src/ast/jsx-parser.ts` | Babel AST → `RuleViolation[]` (handles JSX/TSX) |
-| `packages/scanner/src/ast/vue-parser.ts` | `@vue/compiler-sfc` → `RuleViolation[]` (handles `.vue` SFCs) |
-| `packages/core/src/rules/missing-title.ts` | Rule: missing `<title>` / `<Head>` / Metadata export |
-| `packages/core/src/rules/missing-title.test.ts` | Unit test — ≥1 passing fixture, ≥1 failing fixture |
-| `packages/core/src/rules/missing-meta-desc.ts` | Rule: missing meta description |
-| `packages/core/src/rules/missing-meta-desc.test.ts` | Unit test |
-| `packages/core/src/rules/missing-h1.ts` | Rule: missing or duplicate H1 |
-| `packages/core/src/rules/missing-h1.test.ts` | Unit test |
-| `packages/core/src/rules/missing-alt-text.ts` | Rule: `<img>` without `alt` |
-| `packages/core/src/rules/missing-alt-text.test.ts` | Unit test |
-| `packages/core/src/rules/js-only-links.ts` | Rule: JS-only navigation (no `<a href>`) |
-| `packages/core/src/rules/js-only-links.test.ts` | Unit test |
-| `packages/core/src/rules/hash-routing.ts` | Rule: hash-based routing detected |
-| `packages/core/src/rules/hash-routing.test.ts` | Unit test |
-| `packages/core/src/rules/missing-canonical.ts` | Rule: missing canonical tag |
-| `packages/core/src/rules/missing-canonical.test.ts` | Unit test |
-| `packages/core/src/rules/missing-og-tags.ts` | Rule: missing Open Graph tags |
-| `packages/core/src/rules/missing-og-tags.test.ts` | Unit test |
-| `packages/core/src/rules/missing-structured-data.ts` | Rule: no JSON-LD structured data |
-| `packages/core/src/rules/missing-structured-data.test.ts` | Unit test |
-| `packages/core/src/engine.ts` | Typed rule runner: `runRules(file, ast) → RuleViolation[]` |
-| `packages/cli/src/lib/prompt-generator.ts` | `ScanResult[] → AI prompt string` |
-| `packages/cli/__fixtures__/nextjs-app/` | Sample Next.js project for integration tests |
-| `packages/scanner/src/ast/scanner.test.ts` | Integration test: scan against `__fixtures__/nextjs-app` |
-
-### Dependencies to Install
-
-```sh
-# In packages/scanner:
-pnpm add @babel/parser @babel/traverse @babel/types @vue/compiler-sfc fast-glob
-
-# In packages/core:
-pnpm add zod  # already in cli, add to core for rule schemas
+```
+packages/
+  core/     — shared types, rule definitions, rule engine
+  scanner/  — AST parsers (Babel + Vue) and file walker
+  cli/      — Commander.js CLI, config loader, output formatters
+apps/       — (future) web platform
 ```
 
-### Command to Implement
+### Data Flow for `lseo scan`
 
-Update `packages/cli/src/commands/scan.ts` to:
-1. Call `loadConfig()`
-2. Call the scanner's `walk()` + `parseAST()` + `runRules()` pipeline
-3. Format output via `formatOutput()`
-4. Exit code 1 on critical violations if `--ci` flag is set
+```
+lseo scan
+  → loadConfig()                     (cli/lib/config.ts — cosmiconfig + Zod)
+  → detectFramework()                (scanner/ast/framework-detector.ts)
+  → walkFiles()                      (scanner/ast/walker.ts — fast-glob)
+  → per file:
+      parseJsx() / parseVue()        (scanner/ast/jsx-parser.ts | vue-parser.ts)
+      extractViolations()            → RuleViolation[]
+      runRules()                     (core/engine.ts — registered rule functions)
+      deduplicate violations
+  → formatOutput()                   (cli/lib/output.ts — prompt|json|markdown|table)
+  → generateSummary()                (cli/lib/prompt-generator.ts)
+  → stdout or file
+  → exit 1 if --ci + critical violations
+```
 
-### CI Gate
+### Key Types (`packages/core/src/types.ts`)
 
-All 9 rule unit tests must pass before Phase 2 is considered done.
-*(SPEC targets 13 typed rules total — H1 rule covers both missing + duplicate; prompt formatter + integration test also required)*
+- `RuleViolation` — `{ ruleId, message, severity, location, line?, column?, snippet? }`
+- `ScanResult` — `{ target, type, framework, violations[], scannedAt }`
+- `LseoConfig` — shape of `lseo.config.js`
+- `FrameworkType` — `'nextjs' | 'nuxt' | 'vue' | 'react' | 'auto' | 'unknown'`
+
+### Rule Engine (`packages/core/src/engine.ts`)
+
+Rules are registered via `registerRule(id, fn)`. Each rule is a `(context: RuleContext) => RuleViolation[]` function. `RuleContext` carries `filePath`, `extension`, `framework`, `contents`, and optionally `jsxMetadata` or `vueMetadata` from the AST parsers.
+
+All 10 rules live in `packages/core/src/rules/` and are auto-registered at the bottom of `engine.ts`.
+
+### TypeScript Strictness
+
+The root `tsconfig.json` enforces `strict`, `noImplicitAny`, `noUncheckedIndexedAccess`, and `exactOptionalPropertyTypes`. ESLint also bans `any`. Every rule and type must be strictly typed — no escape hatches.
 
 ---
 
-## Phase 3 — URL Scanner (Next after Phase 2)
+## Progress Tracker
+
+### Phase 1 — CLI SDK Core + Install Banner ✅ COMPLETE
+
+**Published:** `longcelot-seo@0.0.2` on npm
+
+Key decisions:
+- `@longcelot-seo/core` and `@longcelot-seo/scanner` are **private** and bundled into the CLI's dist by tsup — they must never appear in published `dependencies`.
+- Husky pre-commit: `pnpm lint && pnpm typecheck`.
+- CI: `.github/workflows/ci.yml` (lint + typecheck + test on PR/push to main).
+- Publish: `.github/workflows/publish.yml` (triggered by `v*` tag; requires `permissions: contents: write`).
+
+### Phase 2 — Codebase Scanner ✅ COMPLETE
+
+**Target:** `lseo scan` with 10 typed SEO rules + AI agent prompt output
+
+All scanner internals are implemented:
+- `packages/scanner/src/ast/walker.ts` — `walkFiles()` via fast-glob
+- `packages/scanner/src/ast/framework-detector.ts` — `detectFramework()`
+- `packages/scanner/src/ast/jsx-parser.ts` — Babel AST → `JsxMetadata`
+- `packages/scanner/src/ast/vue-parser.ts` — `@vue/compiler-sfc` → `VueMetadata`
+- `packages/core/src/rules/` — 10 rules: `missing-title`, `missing-meta-description`, `missing-h1`, `duplicate-h1`, `missing-alt-text`, `js-only-links`, `hash-routing`, `missing-canonical`, `missing-og-tags`, `missing-structured-data`
+- `packages/core/src/engine.ts` — rule registry + `runRules()` + `scanFile()`
+- `packages/cli/src/lib/prompt-generator.ts` — `generateSummary()`
+- `packages/cli/src/commands/scan.ts` — full pipeline wired up
+
+---
+
+## What To Do Next — Phase 3: URL Scanner
 
 Files: `packages/scanner/src/url/fetcher.ts`, `crawler.ts`, `cheerio-adapter.ts`
 Dependencies: `node-fetch`, `cheerio`
-Command: `lseo url <url>` — BFS multi-page crawl with PageSpeed Insights option
+Command: `lseo url <url>` — BFS multi-page crawl with PageSpeed Insights option (`--psi`)
+
+---
+
+## Phase 3 — URL Scanner ✅ COMPLETE
+
+**Target:** `lseo url <url>` with live website SEO audit
+
+All URL scanner internals are implemented:
+- `packages/scanner/src/url/fetcher.ts` — `fetchPage()`, `extractLinks()`, `extractImages()`, `isUrlReachable()`
+- `packages/scanner/src/url/crawler.ts` — `crawlUrl()` BFS multi-page crawl, `discoverSitemap()`, `parseSitemap()`
+- `packages/scanner/src/url/cheerio-adapter.ts` — `extractMetadata()`, `runUrlRules()` for URL-based SEO checks
+- `packages/core/src/types.ts` — Added URL-specific RuleIds
+- `packages/cli/src/commands/url.ts` — Full pipeline wired up with `--depth`, `--limit`, `--sitemap`, `--output` options
+
+**Verified working:** `lseo url https://example.com --depth 0 --limit 1`
 
 ---
 
