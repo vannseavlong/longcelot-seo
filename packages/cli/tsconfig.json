@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@longcelot-seo/core": ["../core/src/index.ts"]
+      "@longcelot-seo/core": ["../core/src/index.ts"],
+      "@longcelot-seo/scanner": ["../scanner/src/index.ts"]
     }
   },
   "include": ["src/**/*"],

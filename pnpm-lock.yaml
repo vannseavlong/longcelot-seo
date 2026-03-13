@@ -35,6 +35,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@vue/compiler-sfc':
+        specifier: ^3.5.30
+        version: 3.5.30
       chalk:
         specifier: ^5.3.0
         version: 5.6.2
@@ -57,30 +60,12 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
-      '@babel/parser':
-        specifier: ^7.29.0
-        version: 7.29.0
-      '@babel/traverse':
-        specifier: ^7.29.0
-        version: 7.29.0
-      '@babel/types':
-        specifier: ^7.29.0
-        version: 7.29.0
-      '@longcelot-seo/core':
-        specifier: workspace:*
-        version: link:../core
-      '@longcelot-seo/scanner':
-        specifier: workspace:*
-        version: link:../scanner
       '@types/figlet':
         specifier: ^1.5.8
         version: 1.7.0
       '@types/node':
         specifier: ^20.14.0
         version: 20.19.37
-      '@vue/compiler-sfc':
-        specifier: ^3.5.30
-        version: 3.5.30
       cheerio:
         specifier: ^1.0.0
         version: 1.2.0

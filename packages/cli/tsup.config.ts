@@ -21,9 +21,16 @@ export default defineConfig([
       'zod',
       'ora',
       'cli-table3',
+      '@vue/compiler-sfc',
+    ],
+    noExternal: [
       '@longcelot-seo/core',
       '@longcelot-seo/scanner',
-      '@vue/compiler-sfc',
+      '@babel/parser',
+      '@babel/traverse',
+      '@babel/types',
+      'cheerio',
+      'fast-glob',
     ],
   },
   {

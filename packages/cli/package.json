@@ -31,8 +31,7 @@
     "postinstall": "node -e \"const fs=require('fs');if(fs.existsSync('./dist/scripts/postinstall.cjs')){require('./dist/scripts/postinstall.cjs')}\""
   },
   "dependencies": {
-    "@longcelot-seo/core": "workspace:*",
-    "@longcelot-seo/scanner": "workspace:*",
+    "@vue/compiler-sfc": "^3.5.30",
     "chalk": "^5.3.0",
     "cli-table3": "^0.6.5",
     "commander": "^12.1.0",
@@ -44,7 +43,6 @@
   "devDependencies": {
     "@types/figlet": "^1.5.8",
     "@types/node": "^20.14.0",
-    "@vue/compiler-sfc": "^3.5.30",
     "cheerio": "^1.0.0",
     "fast-glob": "^3.3.3",
     "tsup": "^8.1.0",
